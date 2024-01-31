@@ -1,0 +1,89 @@
+.header {
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	justify-content: space-between;
+	align-items: center;
+
+	padding: 0 24px;
+
+	height: 100%;
+	width: 100%;
+
+	@media screen and (min-width: 1440px) {
+		width: 1440px;
+	}
+
+	//
+
+	> * {
+		user-select: none;
+	}
+
+	> a > .logo > img {
+		width: 120px;
+		height: 20px;
+	}
+
+	> .rightBlock {
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+
+		height: 36px;
+
+		> * {
+			margin-left: 18px;
+			height: 36px;
+		}
+
+		> .lupe,
+		> .notif {
+			display: flex;
+			justify-content: center;
+			align-items: center;
+
+			width: 36px;
+
+			border-radius: 18px;
+
+			transition: 300ms;
+
+			&:hover {
+				background: red;
+			}
+		}
+
+		> .notif {
+			position: relative;
+
+			& > .numm {
+				position: absolute;
+
+				top: 0;
+				right: 0;
+
+				font-size: 12px;
+				line-height: 16px;
+				text-align: center;
+
+				color: white;
+				background-color: #ec5654;
+				border-radius: 18px;
+
+				width: 16px;
+				height: 16px;
+			}
+		}
+
+		> .langBlock {
+			display: flex;
+			align-items: center;
+		}
+
+		> .userData {
+			color: #13131390;
+			background-color: #13131310;
+		}
+	}
+}

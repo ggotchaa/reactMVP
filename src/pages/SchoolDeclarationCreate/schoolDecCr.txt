@@ -1,0 +1,234 @@
+import { useNavigate } from "react-router-dom";
+import BoxCard from "../../components/BoxCard";
+import BoxTitle from "../../components/BoxTitle";
+import { AddBox } from "@mui/icons-material";
+import { useState } from "react";
+import {
+  Box,
+  Button,
+
+  Stack,
+} from "@mui/material";
+import { useFormik } from "formik";
+import * as yup from "yup";
+import { form_msg } from "../../utils/constants";
+import { fincolors } from "../../styles/theme";
+import DeclarationStep1 from "./components/DeclarationStep1";
+import DeclarationStep2 from "./components/DeclarationStep2";
+import DeclarationStep3 from "./components/DeclarationStep3";
+
+interface FormFields {
+	organization_name: string;
+	email: string;
+	password: string;
+	passwordTEST: string;
+	signer_fullname: string;
+	signer_official_number: string;
+	official_number: string;
+	official_address: string;
+	actual_address: string;
+  }
+
+interface Handlers {
+	closeCreation: () => void;
+	loginInByFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	nextStep: (forceStep?: number) => void; // `forceStep` optional
+}
+  
+
+const steps = ["Данные по организации", "Данные по школе", "Документы"];
+
+const validationSchema = yup.object({
+  step1: yup.object({
+    organization_name: yup.string().required(),
+  }),
+  step2: yup.object({
+    organization_name: yup.string().required(),
+  }),
+  step3: yup.object({
+    organization_name: yup.string().required(),
+  }),
+});
+
+const validationSchemaStep1 = yup.object({
+  organization_name: yup.string().required(),
+});
+
+interface Handlers {
+  closeCreation: () => void;
+  loginInByFile: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  nextStep: (forceStep?: number) => void;
+}
+
+const SchoolDeclarationCreate = (props: any): JSX.Element => {
+  const [aCurrentStep, setCurrentStep] = useState<number>(0);
+  const navigate = useNavigate();
+  const formik = useFormik<FormFields>({
+    initialValues: {
+      organization_name: "",
+      email: "foobar@example.com",
+      password: "foobar",
+      passwordTEST: "tttt",
+    },
+    validationSchema: validationSchema,
+    onSubmit: (values: FormFields) => {
+      alert(JSON.stringify(values, null, 2));
+    },
+  });
+
+  const formikStep1 = useFormik({
+    initialValues: {
+      organization_name: "fsssssssssssssssssssm",
+    },
+    validationSchema: validationSchemaStep1,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+
+      handlers.nextStep();
+    },
+  });
+
+  const formikStep2 = useFormik({
+    initialValues: {
+      organization_name: "fsssssssssssssssssssm",
+    },
+    validationSchema: validationSchemaStep1,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+
+      handlers.nextStep();
+    },
+  });
+
+  const formikStep3 = useFormik({
+    initialValues: {
+      organization_name: "fsssssssssssssssssssm",
+    },
+    validationSchema: validationSchemaStep1,
+    onSubmit: (values) => {
+      alert(JSON.stringify(values, null, 2));
+
+      handlers.nextStep();
+    },
+  });
+
+  console.log(
+    aCurrentStep,
+    formikStep1.values,
+    formikStep2.values,
+    formikStep3.values
+  );
+
+  const handlers = {
+    closeCreation: () => {
+      if (
+        !window.confirm(
+          "Все заполненные данные удаляться, уверены что хотите продолжить?"
+        )
+      )
+        return false;
+
+      setCurrentStep(0);
+      navigate("/school/declarations");
+    },
+
+    // loginInByFile: (e) => {
+    //   if (!e?.target?.files?.[0]) return false;
+
+    //   try {
+    //     const file = e.target.files[0];
+    //     const sizeMB = file.size / 1000000;
+    //     console.log(file, sizeMB);
+
+    //     if (sizeMB > 100) throw new Error("File is too big");
+
+    //     // todo send file
+    //   } catch (e) {
+    //     window.alert("[loginInByFile] err: " + e.message);
+    //   } finally {
+    //     e.target.value = null;
+    //   }
+    // },
+
+
+    nextStep: (forceStep?: number) => {
+		const step = forceStep !== undefined ? forceStep : aCurrentStep + 1;
+		setCurrentStep(step);
+	  },
+	  
+  };
+
+  return (
+    <>
+      <Box>
+        <Button
+          variant="text"
+          startIcon={<span>{"<"}</span>}
+          onClick={() => handlers.closeCreation()}
+        >
+          Назад к заявлениям
+        </Button>
+      </Box>
+
+      <BoxTitle
+        title={
+          "Заявление на размещение гос. образовательного заказа на среднее образование"
+        }
+      >
+        {aCurrentStep !== 2 ? (
+          <Button
+            sx={{ minWidth: "200px" }}
+            form={`declarations_step_${1 + aCurrentStep}`}
+            type="submit"
+          >
+            Продолжить
+          </Button>
+        ) : (
+          <Button
+            sx={{ minWidth: "200px" }}
+            form="declarations_create_form"
+            type="submit"
+          >
+            Оформить заявление
+          </Button>
+        )}
+      </BoxTitle>
+
+      <Stack
+        direction={"row"}
+        sx={{
+          pointerEvents: "none",
+          background: fincolors.background.paper,
+          borderRadius: "10px",
+        }}
+      >
+        {steps.map((label, index) => {
+          const isMe = index === +aCurrentStep;
+
+          return (
+            <Button
+              key={index + label}
+              sx={{
+                width: "calc(100% / 3)",
+                color: isMe ? "" : fincolors.text.primary,
+                background: isMe ? "" : fincolors.background.paper,
+                fontWeight: isMe ? 500 : 400,
+              }}
+            >
+              {label}
+            </Button>
+          );
+        })}
+      </Stack>
+
+      {aCurrentStep === 0 ? (
+        <DeclarationStep1 formik={formikStep1}></DeclarationStep1>
+      ) : aCurrentStep === 1 ? (
+        <DeclarationStep2 formik={formikStep2}></DeclarationStep2>
+      ) : aCurrentStep === 2 ? (
+        <DeclarationStep3 formik={formikStep3}></DeclarationStep3>
+      ) : null}
+    </>
+  );
+};
+export default SchoolDeclarationCreate;
